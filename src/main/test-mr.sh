@@ -70,10 +70,11 @@ fi
 # wait for remaining workers and master to exit.
 wait ; wait ; wait
 
+exit 8
+
 # now indexer
 rm -f mr-*
 
-exit 8
 
 # generate the correct output
 ../mrsequential ../../mrapps/indexer.so ../pg*txt || exit 1
