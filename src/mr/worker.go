@@ -53,7 +53,6 @@ func Worker(mapf func(string, string) []KeyValue,
 		// 如果rpc报错
 		ok := call("Master.AcquireTask", &args, &reply)
 		if !ok {
-			// 睡一会，然后继续
 			break
 		}
 

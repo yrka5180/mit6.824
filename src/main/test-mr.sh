@@ -66,6 +66,7 @@ else
   failed_any=1
 fi
 
+
 # wait for remaining workers and master to exit.
 wait ; wait ; wait
 
@@ -98,6 +99,7 @@ fi
 
 wait ; wait
 
+exit 8
 
 echo '***' Starting map parallelism test.
 
