@@ -146,7 +146,6 @@ func doReduce(reducef func(string, []string) string, t TaskReply) {
 	// 执行reduce task
 	intermediate := []KeyValue{}
 	for _, f := range t.FileList {
-		fmt.Println()
 		fd, err := os.Open(f)
 		if err != nil {
 			log.Println(err)
@@ -228,7 +227,7 @@ func call(rpcname string, args interface{}, reply interface{}) bool {
 	defer c.Close()
 
 	err = c.Call(rpcname, args, reply)
-	if err == nil {
+	if err == nil || err == ErrMapNotDone {
 		return true
 	}
 
