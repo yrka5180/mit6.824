@@ -61,14 +61,14 @@ func Worker(mapf func(string, string) []KeyValue,
 		// 任务可能是 map 或者 reduce
 		switch reply.TaskType {
 		case MapTask:
-			fmt.Println("get map task, file lists:", reply.FileList)
+			// fmt.Println("get map task, file lists:", reply.FileList)
 			// 将kv根据
 			fList := doMap(mapf, reply)
 			// 完成后通知master
 			notice(fList, reply.TaskType, reply.TaskID)
 			// after processing continue find another task, until all task done
 		case ReduceTask:
-			fmt.Println("get reduce task", reply.FileList)
+			// fmt.Println("get reduce task", reply.FileList)
 			doReduce(reducef, reply)
 			// 完成后通知master
 			notice(nil, reply.TaskType, reply.TaskID)

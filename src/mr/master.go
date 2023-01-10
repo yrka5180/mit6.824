@@ -2,7 +2,6 @@ package mr
 
 import (
 	"errors"
-	"fmt"
 	"log"
 	"strconv"
 	"strings"
@@ -92,7 +91,7 @@ func (m *Master) AcquireTask(args *TaskArgs, reply *TaskReply) error {
 	if job, ok := <-m.TaskMapCh; ok {
 		// 从map ch中拿取task
 		*reply = *job
-		fmt.Println("get map from channel", job)
+		// fmt.Println("get map from channel", job)
 		return nil
 	}
 	// 如果map task还没有结束，需要等待
@@ -102,7 +101,7 @@ func (m *Master) AcquireTask(args *TaskArgs, reply *TaskReply) error {
 	// 获取 reduce task
 	if job, ok := <-m.TaskReduceCh; ok {
 		*reply = *job
-		fmt.Println("get reduce from channel", job)
+		// fmt.Println("get reduce from channel", job)
 		return nil
 	}
 	// 如果都无法获取，则表示任务任务全部分发结束
@@ -118,7 +117,7 @@ func (m *Master) makeMapTask(files []string) {
 		job.FileList = []string{f}
 		job.TaskID = m.getTaskID()
 		job.NReduce = m.TaskReduceNum
-		fmt.Println("put file", f, "into channel")
+		// fmt.Println("put file", f, "into channel")
 		// 将job放入jobCh
 		m.TaskMapCh <- &job
 	}
