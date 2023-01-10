@@ -73,6 +73,8 @@ wait ; wait ; wait
 # now indexer
 rm -f mr-*
 
+exit 8
+
 # generate the correct output
 ../mrsequential ../../mrapps/indexer.so ../pg*txt || exit 1
 sort mr-out-0 > mr-correct-indexer.txt
@@ -98,8 +100,6 @@ else
 fi
 
 wait ; wait
-
-exit 8
 
 echo '***' Starting map parallelism test.
 
