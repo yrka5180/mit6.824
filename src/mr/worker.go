@@ -62,13 +62,14 @@ func Worker(mapf func(string, string) []KeyValue,
 		switch reply.TaskType {
 		case MapTask:
 			fList := doMap(mapf, reply)
-			// fmt.Printf("get map task %v\n", reply.TaskID)
+			// fmt.Printf("worker: get map task %v\n", reply.TaskID)
 			// 通知当前map任务完成
 			notice(fList, reply.TaskType, reply.TaskID)
+			// fmt.Printf("worker: finish map task %v\n", reply.TaskID)
 		case ReduceTask:
 			// TODO
 			doReduce(reducef, reply)
-			// fmt.Printf("get reduce task %v\n", reply.TaskID)
+			// fmt.Printf("worker: get reduce task %v\n", reply.TaskID)
 			notice(nil, reply.TaskType, reply.TaskID)
 		case WaitingTask:
 			// fmt.Println("sleep for a while...")

@@ -191,8 +191,6 @@ wait
 wait
 wait
 
-exit 8
-
 rm $SOCKNAME
 sort mr-out* | grep . > mr-crash-all
 if cmp mr-crash-all mr-correct-crash.txt
