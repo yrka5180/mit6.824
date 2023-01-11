@@ -38,9 +38,9 @@ type TaskReply struct {
 
 // NoticeArgs 通知RPC参数, worker通知master,
 type NoticeArgs struct {
-	TaskType int      `json:"task_type"` // 任务类型
-	TaskID   int      `json:"task_id"`   // 当前任务id
-	MapAddrs []string `json:"map_addrs"` // map task 地址
+	TaskType      int      `json:"task_type"`       // 任务类型
+	TaskID        int      `json:"task_id"`         // 当前任务id
+	InterFileList []string `json:"inter_file_list"` // 当前任务生成的中间文件地址
 }
 
 type NoticeReply struct {

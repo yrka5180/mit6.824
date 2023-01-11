@@ -66,11 +66,8 @@ else
   failed_any=1
 fi
 
-
 # wait for remaining workers and master to exit.
 wait ; wait ; wait
-
-exit 8
 
 # now indexer
 rm -f mr-*
@@ -101,6 +98,7 @@ else
 fi
 
 wait ; wait
+
 
 echo '***' Starting map parallelism test.
 
@@ -154,7 +152,6 @@ fi
 
 wait ; wait
 
-
 # generate the correct output
 ../mrsequential ../../mrapps/nocrash.so ../pg*txt || exit 1
 sort mr-out-0 > mr-correct-crash.txt
@@ -193,6 +190,8 @@ done
 wait
 wait
 wait
+
+exit 8
 
 rm $SOCKNAME
 sort mr-out* | grep . > mr-crash-all

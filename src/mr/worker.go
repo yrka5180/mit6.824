@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"time"
 )
 import "log"
 import "net/rpc"
@@ -56,22 +57,26 @@ func Worker(mapf func(string, string) []KeyValue,
 			log.Println("worker exited")
 			break
 		}
-
 		// 正常获取任务
 		// 任务可能是 map 或者 reduce
 		switch reply.TaskType {
 		case MapTask:
-			// fmt.Println("get map task, file lists:", reply.FileList)
-			// 将kv根据
 			fList := doMap(mapf, reply)
-			// 完成后通知master
+			// fmt.Printf("get map task %v\n", reply.TaskID)
+			// 通知当前map任务完成
 			notice(fList, reply.TaskType, reply.TaskID)
-			// after processing continue find another task, until all task done
 		case ReduceTask:
-			// fmt.Println("get reduce task", reply.FileList)
+			// TODO
 			doReduce(reducef, reply)
-			// 完成后通知master
+			// fmt.Printf("get reduce task %v\n", reply.TaskID)
 			notice(nil, reply.TaskType, reply.TaskID)
+		case WaitingTask:
+			// fmt.Println("sleep for a while...")
+			time.Sleep(time.Second * 2)
+			continue
+		case ExitedTask:
+			// fmt.Println("worker exited...")
+			return
 		}
 	}
 }
@@ -79,9 +84,9 @@ func Worker(mapf func(string, string) []KeyValue,
 // notice 当map task完成时，通知master中间文件地址
 func notice(addrs []string, jobType, taskID int) {
 	args := NoticeArgs{
-		TaskType: jobType,
-		TaskID:   taskID,
-		MapAddrs: addrs,
+		TaskType:      jobType,
+		TaskID:        taskID,
+		InterFileList: addrs,
 	}
 	call("Master.TaskDone", &args, nil)
 }
@@ -118,12 +123,13 @@ func doMap(mapf func(string, string) []KeyValue, t TaskReply) []string {
 		// 将kv放入对应的内存r中
 		memKV[r] = append(memKV[r], kv)
 	}
+
+	wd, _ := os.Getwd()
 	// write into file
 	for i, kvs := range memKV {
-
 		fName := fmt.Sprintf("mr-%d-%d", t.TaskID, i)
-		fList[i] = filepath.Join("mr_out", fName)
 		// kvs是所有要落盘到第i个reduce task的集合
+		fList[i] = filepath.Join(wd, fName)
 		f, err := os.Create(fList[i])
 		if err != nil {
 			log.Println(err)
@@ -143,7 +149,7 @@ func doMap(mapf func(string, string) []KeyValue, t TaskReply) []string {
 	return fList
 }
 
-func doReduce(reducef func(string, []string) string, t TaskReply) {
+func doReduce(reducef func(string, []string) string, t TaskReply) error {
 	// 执行reduce task
 	intermediate := []KeyValue{}
 	for _, f := range t.FileList {
@@ -187,7 +193,7 @@ func doReduce(reducef func(string, []string) string, t TaskReply) {
 
 		i = j
 	}
-
+	return nil
 }
 
 //
